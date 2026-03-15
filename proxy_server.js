@@ -108,8 +108,13 @@ self.addEventListener('fetch', event => {
     }
 
 // ===== HEALTH CHECK ENDPOINT (REQUIRED FOR RAILWAY) =====
-if (pathname === '/health') {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+// ===== HEALTH CHECK ENDPOINT - FIXED FOR RAILWAY =====
+if (req.url === '/health') {
+    // Always return 200 for health checks, ignore hostname
+    res.writeHead(200, { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'  // Allow any origin
+    });
     res.end(JSON.stringify({ status: 'ok', timestamp: Date.now() }));
     return;
 }
