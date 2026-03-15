@@ -4,7 +4,8 @@
   },
   "deploy": {
     "startCommand": "node proxy_server.js",
-    "healthcheckPath": "",
+    "healthcheckPath": "http://localhost:8080/health",
+    "healthcheckTimeout": 30,
     "restartPolicyType": "ON_FAILURE"
   }
 }

