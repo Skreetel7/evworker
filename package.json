@@ -1,0 +1,20 @@
+{
+  "name": "evilworker",
+  "version": "1.0.0",
+  "description": "![article_cover](https://github.com/user-attachments/assets/d440042c-0cce-4cc4-891c-7eb3edb4827c)",
+  "main": "decrypt_log_file.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Skreetel7/evworker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Skreetel7/evworker/issues"
+  },
+  "homepage": "https://github.com/Skreetel7/evworker#readme"
+}
