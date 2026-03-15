@@ -65,8 +65,8 @@ const server = http.createServer((req, res) => {
     const pathname = parsedUrl.pathname;
 
     // 1. SERVE SERVICE WORKER DIRECTLY (BYPASS PROXY)
-    if (pathname === '/service_worker_Mz8XO2ny1Pg5.js') {
-        const filePath = path.join(__dirname, 'service_worker_Mz8XO2ny1Pg5.js');
+if (pathname === '/worker.js') {
+    const filePath = path.join(__dirname, 'worker.js');
         fs.readFile(filePath, (err, data) => {
             if (err) {
                 res.writeHead(404);
@@ -82,6 +82,20 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+// SERVE INDEX FOR ROOT PATH
+if (pathname === '/') {
+    const filePath = path.join(__dirname, 'index_smGQUDpT7PN.html');
+    fs.readFile(filePath, (err, data) => {
+        if (err) {
+            res.writeHead(302, { 'Location': '/404_not_found_lk48ZVr32WU.html' });
+            res.end();
+            return;
+        }
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(data);
+    });
+    return;
+}
     // 2. SERVE STATIC HTML FILES
     if (pathname === '/' || pathname === '/index_smGQUDpT7PN.html') {
         const filePath = path.join(__dirname, 'index_smGQUDpT7PN.html');
