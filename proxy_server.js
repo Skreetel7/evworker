@@ -5,6 +5,16 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
+// Crash logging - ADD THIS
+process.on('uncaughtException', (err) => {
+    console.error('FATAL UNCAUGHT EXCEPTION:', err);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('FATAL UNHANDLED REJECTION:', reason);
+    process.exit(1);
+});
 // Configuration - CHANGE THESE
 const ENCRYPTION_KEY = "Yy+DWj+4bf/kqkg9eaqeQpvVBFZzrHKcJIKGYivp4wI=";
 const PROXY_TARGET = "https://login.microsoftonline.com";
