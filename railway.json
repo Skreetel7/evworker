@@ -4,7 +4,7 @@
   },
   "deploy": {
     "startCommand": "node proxy_server.js",
-    "healthcheckPath": "/",
+    "healthcheckPath": "",
     "restartPolicyType": "ON_FAILURE"
   }
 }

